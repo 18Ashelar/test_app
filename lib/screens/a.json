@@ -1,0 +1,51 @@
+[
+    {
+        "geojson": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    73.8215083,
+                    18.6378567
+                ]
+            },
+            "properties": {
+                "uid": "84bd361d-0a46-44b2-a2f1-a23a55a33546",
+                "org_uid": "efab157e-df57-4104-af71-7d0023807900",
+                "ex_uid": "035b3b85-e10e-4a71-a141-92feef3f60cf",
+                "ga_area": "selectedGA",
+                "area": "area",
+                "address": "03/215/145, Pimpri Colony, Pimpri-Chinchwad, Maharashtra 411018, India",
+                "in_charge": "",
+                "in_charge_designation": "",
+                "contact_no": "",
+                "contractor": "Dhaneshwar construction",
+                "supervisor_uid": "bbf7db8c-26bd-491a-b4a7-8b3d69596d8d",
+                "supervisee_uid": "bbf7db8c-26bd-491a-b4a7-8b3d69596d8d",
+                "descr": "Smart city project",
+                "user_uid": "bced49fd-47ac-4249-bfcb-54a895aa0ba0",
+                "updated_by": "subhash_desai",
+                "excavation_mode": "JCB",
+                "exca_status": "New",
+                "stpl_size": "150",
+                "stpl_exposed": false,
+                "mdpe_size": "",
+                "mdpe_exposed": false,
+                "tra": "",
+                "remarks": "",
+                "custom_data": {
+                    "roles": [
+                        "f03a655b-f826-49bd-8db8-e9703b7b6b4a",
+                        "8aefcd52-d508-48ed-bc8c-3a20d5fadd0c",
+                        "3bbe763f-ec26-43cd-ac52-1ae14abdea55",
+                        "6432f826-3ffa-4a7c-b6c4-11061ec5c7ce",
+                        "2a0f7b97-c10c-4401-ae04-1712253a9e4c",
+                        "6f2e535d-c077-4bdd-abd8-c775dc29de05"
+                    ]
+                },
+                "third_party_agency": "",
+                "created_at": "2022-12-16T10:53:12.039649"
+            }
+        }
+    }
+]
