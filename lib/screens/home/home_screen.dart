@@ -1,91 +1,120 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:test_app/business_logic/bloc/login/bloc/map_data_bloc.dart';
-import 'package:test_app/data/data_provider/login_details_api.dart';
-import 'package:test_app/screens/loading_indicator.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:test_app/screens/home/friends_list.dart';
 
-import '../../data/model/map_data/geo_data.dart';
+import '../../business_logic/bloc/bloc/friends_data_save_bloc.dart';
+import '../../data/repository/friends_list_repository.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.token});
-
-  final String token;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  MapDataBloc mapDataBloc = MapDataBloc();
+  PageController controller = PageController();
+  int index = 0;
 
-  List<GeoData>? geoData;
+  late FriendsDataSaveBloc friendsDataSaveBloc;
+
 
   @override
   void initState() {
+    FlutterNativeSplash.remove();
+
+    Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (index < 4) {
+        index++;
+        controller.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeIn,
+        );
+      } else {
+        index = 4;
+        timer.cancel();
+      }
+    });
+
     super.initState();
   }
 
-  final Map<String, Marker> _markers = {};
-  LatLng _center = LatLng(73.8215083, 18.6378567);
-
-  Future<void> _onMapCreated(GoogleMapController controller) async {
-    setState(() {
-      _markers.clear();
-
-      for (final mapData in geoData!) {
-        print((mapData.geojson!.geometry!.coordinates[0]));
-
-        final marker = Marker(
-          markerId: MarkerId(mapData.geojson!.properties!.uid!),
-          position: LatLng(mapData.geojson!.geometry!.coordinates[0],
-              mapData.geojson!.geometry!.coordinates[1]),
-          infoWindow: InfoWindow(
-            title: mapData.geojson!.properties!.contractor,
-            // snippet: office.address,
-          ),
-        );
-        _markers[mapData.geojson!.properties!.uid!] = marker;
-      }
-    });
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
+
+  final List<Widget> _list = <Widget>[
+    Center(
+        child: Pages(
+      text: "Page One",
+      color: Colors.teal,
+    )),
+    Center(
+        child: Pages(
+      text: "Page Two",
+      color: Colors.red.shade100,
+    )),
+    Center(
+        child: Pages(
+      text: "Page Three",
+      color: Colors.grey,
+    )),
+    const FriendsList()
+  ];
 
   @override
   Widget build(BuildContext context) {
+    friendsDataSaveBloc = FriendsDataSaveBloc(
+        RepositoryProvider.of<FriendsListRepository>(context));
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Goole Map Location'),
-      ),
-      body: BlocProvider(
-        create: (context) => mapDataBloc..add(LoadMapData(widget.token)),
-        child: BlocBuilder<MapDataBloc, MapDataState>(
-          builder: (context, state) {
-            if (state is MapDataLoading) {
-              return const LoadingIndicator();
-            }
-            if (state is MapDataLoaded) {
-              geoData = state.data;
-              return GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: _center,
-                  zoom: 2,
-                ),
-                markers: _markers.values.toSet(),
-              );
-            }
-            if (state is MapDataFailure) {
-              return Center(
-                child: Text(state.message),
-              );
-            }
-            return Container();
-          },
-        ),
+        resizeToAvoidBottomInset: false,
+    
+        body: BlocProvider(
+          create: (context) => friendsDataSaveBloc..add(GetFriendEvent()),
+          child: SafeArea(
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              allowImplicitScrolling: true,
+              scrollDirection: Axis.horizontal,
+              controller: controller,
+              onPageChanged: (value) {
+                setState(() {
+                  index = value;
+                });
+              },
+              children: _list,
+            ),
+          ),
+        ));
+  }
+
+}
+
+class Pages extends StatelessWidget {
+  final text;
+  final color;
+  Pages({this.text, this.color});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: color,
+      child: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
+              ),
+            ]),
       ),
     );
   }
